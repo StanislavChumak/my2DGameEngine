@@ -1,0 +1,10 @@
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/CMakeFiles/newProjectOpenGl.dir
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/CMakeFiles/package.dir
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/CMakeFiles/package_source.dir
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/CMakeFiles/edit_cache.dir
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/CMakeFiles/rebuild_cache.dir
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/glad/CMakeFiles/glad.dir
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/glad/CMakeFiles/package.dir
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/glad/CMakeFiles/package_source.dir
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/glad/CMakeFiles/edit_cache.dir
+/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/glad/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -Wl,--dependency-file=CMakeFiles/newProjectOpenGl.dir/link.d CMakeFiles/newProjectOpenGl.dir/src/main.cpp.o -o newProjectOpenGl  -lglfw glad/libglad.a

@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build",
+  "command": "/usr/bin/c++  -I/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/glad/include -g -o CMakeFiles/newProjectOpenGl.dir/src/main.cpp.o -c /home/stas/programming/C++/projectOpenGL/newProjectOpenGL/src/main.cpp",
+  "file": "/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/src/main.cpp",
+  "output": "CMakeFiles/newProjectOpenGl.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/build/glad",
+  "command": "/usr/bin/cc  -I/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/glad/include -g -o CMakeFiles/glad.dir/src/glad.c.o -c /home/stas/programming/C++/projectOpenGL/newProjectOpenGL/glad/src/glad.c",
+  "file": "/home/stas/programming/C++/projectOpenGL/newProjectOpenGL/glad/src/glad.c",
+  "output": "glad/CMakeFiles/glad.dir/src/glad.c.o"
+}
+]
