@@ -63,16 +63,6 @@ namespace Render
         return true;
     }
 
-    ShaderProgram::~ShaderProgram()
-    {
-        glDeleteProgram(m_ID);
-    }
-
-    void ShaderProgram::use() const
-    {
-        glUseProgram(m_ID);
-    }
-
     ShaderProgram &ShaderProgram::operator=(ShaderProgram &&shaderProgram) noexcept
     {
         glDeleteProgram(m_ID);
@@ -91,5 +81,20 @@ namespace Render
 
         shaderProgram.m_ID = 0;
         shaderProgram.m_isCompiled = false;
+    }
+
+    ShaderProgram::~ShaderProgram()
+    {
+        glDeleteProgram(m_ID);
+    }
+
+    void ShaderProgram::use() const
+    {
+        glUseProgram(m_ID);
+    }
+
+    void ShaderProgram::setInt(const char* name, GLint value)
+    {
+        glUniform1i(glGetUniformLocation(m_ID, name), value);
     }
 }

@@ -17,13 +17,13 @@ namespace Render
 
         bool isCompiled() const { return m_isCompiled; };
         void use() const;
+        void setInt(const char* name, GLint value);
 
     private:
-
-
         bool createShader(const char *sourse, GLenum shaderType, GLuint &shederID);
         bool m_isCompiled = false;
         GLuint m_ID = 0;
+        
     };
 }
 
