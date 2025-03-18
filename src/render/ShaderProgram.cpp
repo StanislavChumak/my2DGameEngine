@@ -1,56 +1,22 @@
-#include "shaderProgram.h"
+#include "ShaderProgram.h"
 
 #include <string>
 #include <fstream>
 #include <iostream>
 
-namespace render
+namespace Render
 {
-    ShaderProgram::ShaderProgram(const char *vertexPath, const char *fragmentPath)
+    ShaderProgram::ShaderProgram(const char *vertexShaderCode, const char *fragmentShaderCode)
     {
-
-        std::string vertexCode;
-        std::string fragmentCode;
-        {
-            std::ifstream vShaderFile;
-            std::ifstream fShaderFile;
-
-            std::string line;
-            vShaderFile.open(vertexPath, std::ios::in);
-            fShaderFile.open(fragmentPath, std::ios::in);
-
-            if (vShaderFile.is_open() && fShaderFile.is_open())
-            {
-                while (std::getline(vShaderFile, line))
-                {
-                    vertexCode += line + "\n";
-                }
-                while (std::getline(fShaderFile, line))
-                {
-                    fragmentCode += line + "\n";
-                }
-                
-            }
-            else
-            {
-                std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ:" << std::endl;
-            }
-
-            vShaderFile.close();
-            fShaderFile.close();
-        }
-        const char *vShaderCode = vertexCode.c_str();
-        const char *fShaderCode = fragmentCode.c_str();
-
         GLuint vertexShaderID;
-        if (!createShader(vShaderCode, GL_VERTEX_SHADER, vertexShaderID))
+        if (!createShader(vertexShaderCode, GL_VERTEX_SHADER, vertexShaderID))
         {
             std::cerr << "ERROR::VERTEX::SHADER::COMPILATION_FAILED" << std::endl;
             return;
         }
 
         GLuint fragmentShaderID;
-        if (!createShader(fShaderCode, GL_FRAGMENT_SHADER, fragmentShaderID))
+        if (!createShader(fragmentShaderCode, GL_FRAGMENT_SHADER, fragmentShaderID))
         {
             std::cerr << "ERROR::FRAGMENT::SHADER::COMPILATION_FAILED" << std::endl;
             glDeleteShader(vertexShaderID);
@@ -67,7 +33,7 @@ namespace render
         {
             char infoLog[1024];
             glGetProgramInfoLog(m_ID, 1024, nullptr, infoLog);
-            std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+            std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED: \n"
                       << infoLog << std::endl;
         }
         else
@@ -90,7 +56,7 @@ namespace render
         {
             char infoLog[1024];
             glGetShaderInfoLog(shederID, 1024, nullptr, infoLog);
-            std::cerr << "ERROR::SHADER::COMPILATION_FAILED\n"
+            std::cerr << "ERROR::SHADER::COMPILATION_FAILED: \n"
                       << infoLog << std::endl;
             return false;
         }

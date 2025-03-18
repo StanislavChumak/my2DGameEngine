@@ -3,7 +3,8 @@
 
 #include <iostream>
 
-#include "render/shaderProgram.h"
+#include "render/ShaderProgram.h"
+#include "resources/ResourceManager.h"
 
 void windowSizeCallback(GLFWwindow *, int, int);
 void processInput(GLFWwindow *);
@@ -30,9 +31,8 @@ GLuint indices[] = {
     1, 2, 3  // second Triangle
 };
 
-int main(int, char **)
+int main(int argc, char ** argv)
 {
-
     if (!glfwInit())
     {
         std::cerr << "Failed GLFW" << std::endl;
@@ -54,7 +54,7 @@ int main(int, char **)
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "Couidn't load opengl" << std::endl;
+        std::cerr << "Couidn't load opengl" << std::endl;
         glfwTerminate();
         return -1;
     }
@@ -65,8 +65,11 @@ int main(int, char **)
 
     glClearColor(0.3f, 0.1f, 0.5f, 1.0f);
 
-    render::ShaderProgram shederProgram("../src/render/shaders/shader.vshader","../src/render/shaders/shader.fshader");
-    if(!shederProgram.isCompiled())
+
+    ResourceManager* resourceManager = ResourceManager::getResourceManager(argv[0]);
+
+    auto defaultShaderProgram = resourceManager->loadShaders("DefaultShader","res/shaders/shader.vshader","res/shaders/shader.fshader");
+    if(!defaultShaderProgram->isCompiled())
     {
         std::cerr << "Can't Create Sheder Program" << std::endl;
         return -1;
@@ -105,7 +108,7 @@ int main(int, char **)
         // rendering commands here
         glClear(GL_COLOR_BUFFER_BIT);
 
-        shederProgram.use();
+        defaultShaderProgram->use();
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
@@ -116,6 +119,8 @@ int main(int, char **)
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBOposition);
     glDeleteBuffers(1, &EBO);
+
+    delete resourceManager;
 
     glfwTerminate();
 
