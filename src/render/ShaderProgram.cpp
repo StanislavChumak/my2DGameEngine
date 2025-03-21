@@ -1,7 +1,8 @@
 #include "ShaderProgram.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <string>
-#include <fstream>
 #include <iostream>
 
 namespace Render
@@ -93,8 +94,13 @@ namespace Render
         glUseProgram(m_ID);
     }
 
-    void ShaderProgram::setInt(const char* name, GLint value)
+    void ShaderProgram::setInt(const char* name, const GLint value) const
     {
         glUniform1i(glGetUniformLocation(m_ID, name), value);
+    }
+
+    void ShaderProgram::setMatrix4(const char* name,  const glm::mat4 &matrix) const
+    {
+        glUniformMatrix4fv(glGetUniformLocation(m_ID, name), 1, GL_FALSE, glm::value_ptr(matrix));
     }
 }

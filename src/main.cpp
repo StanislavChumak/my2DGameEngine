@@ -1,6 +1,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec2.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <iostream>
 
 #include "render/ShaderProgram.h"
@@ -11,23 +16,22 @@
 void windowSizeCallback(GLFWwindow *, int, int);
 void processInput(GLFWwindow *);
 
-const unsigned int WINDOW_WIDTH = 800;
-const unsigned int WINDOW_HEIGHT = 600;
+glm::vec2 windowSize = glm::vec2(800.0f, 600.0f);
 
 
-GLfloat position[] = {
-    0.5f, 0.5f, 0.0f,  // top right
-    0.5f, -0.5f, 0.0f, // bottom right
-    -0.5f, 0.5f, 0.0f, // top left
-    -0.5f, -0.5f, 0.0f // bottom left
+const GLfloat position[] = {
+    50.0f, 50.0f, 0.0f,  // top right
+    50.0f, -50.0f, 0.0f, // bottom right
+    -50.0f, 50.0f, 0.0f, // top left
+    -50.0f, -50.0f, 0.0f // bottom left
 };
-GLfloat color[] = {
-    1.0f, 0.3f, 0.3f, //
-    0.3f, 1.0f, 0.3f, //
-    0.3f, 0.3f, 1.0f, //
-    1.0f, 0.3f, 0.3f  //
+const GLfloat color[] = {
+    1.0f, 1.0f, 1.0f, //
+    1.0f, 1.0f, 1.0f, //
+    1.0f, 1.0f, 1.0f, //
+    1.0f, 1.0f, 1.0f  //
 };
-GLfloat texCor[] = {
+const GLfloat texCor[] = {
     1.0f, 1.0f, //
     1.0f, 0.0f, //
     0.0f, 1.0f, //
@@ -50,7 +54,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "my Window", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(windowSize.x, windowSize.y, "my Window", nullptr, nullptr);
     if (!window)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;
@@ -76,7 +80,7 @@ int main(int argc, char ** argv)
 
     ResourceManager* resourceManager = ResourceManager::getResourceManager(argv[0]);
 
-    auto defaultShaderProgram = resourceManager->loadShaders("DefaultShader","res/shaders/shader.vshader","res/shaders/shader.fshader");
+    auto defaultShaderProgram = resourceManager->loadShaders("DefaultShader","res/shaders/vertex.vshader","res/shaders/fragment.fshader");
     if(!defaultShaderProgram->isCompiled())
     {
         std::cerr << "Can't Create Sheder Program" << std::endl;
@@ -118,6 +122,9 @@ int main(int argc, char ** argv)
     defaultShaderProgram->use();
     defaultShaderProgram->setInt("Tex", 0);
 
+    glm::mat4 projectionMatrix = glm::ortho(0.0f,windowSize.x,0.0f,windowSize.y,-100.0f,100.0f);
+    defaultShaderProgram->setMatrix4("projectionMat", projectionMatrix);
+    
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     while (!glfwWindowShouldClose(window))
@@ -127,6 +134,12 @@ int main(int argc, char ** argv)
 
         // rendering commands here
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(400.0f, 300.0f, 0.0f));
+        trans = glm::scale(trans, glm::vec3(3.0f - sin(glfwGetTime()), 3.0f - sin(glfwGetTime()), 3.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime() * glm::radians(100.0f), glm::vec3(0.0, 0.0, 1.0));
+        defaultShaderProgram->setMatrix4("transform", trans);
 
         defaultShaderProgram->use();
         glBindVertexArray(VAO);
@@ -151,6 +164,8 @@ int main(int argc, char ** argv)
 void windowSizeCallback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
+    windowSize.x = width;
+    windowSize.y = height;
 }
 
 void processInput(GLFWwindow *window)

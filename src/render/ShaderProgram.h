@@ -2,6 +2,7 @@
 #define H_SHADERPROGRAM
 
 #include <glad/glad.h>
+#include <glm/mat4x4.hpp>
 
 namespace Render
 {
@@ -17,7 +18,8 @@ namespace Render
 
         bool isCompiled() const { return m_isCompiled; };
         void use() const;
-        void setInt(const char* name, GLint value);
+        void setInt(const char* name, const GLint value) const;
+        void setMatrix4(const char* name,  const glm::mat4 &matrix) const;
 
     private:
         bool createShader(const char *sourse, GLenum shaderType, GLuint &shederID);
