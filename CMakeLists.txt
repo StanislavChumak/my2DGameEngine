@@ -5,12 +5,12 @@ project(${PROJECT_NAME} VERSION 0.1.0)
 
 add_executable(${PROJECT_NAME} 
     src/main.cpp
-    src/render/ShaderProgram.h
-    src/render/ShaderProgram.cpp
-    src/render/Texture2D.h
-    src/render/Texture2D.cpp
-    src/render/Sprite.h
-    src/render/Sprite.cpp
+    src/Render/ShaderProgram.h
+    src/Render/ShaderProgram.cpp
+    src/Render/Texture2D.h
+    src/Render/Texture2D.cpp
+    src/Render/Sprite2D.h
+    src/Render/Sprite2D.cpp
     src/resources/ResourceManager.h
     src/resources/ResourceManager.cpp
     src/resources/stb_image.h

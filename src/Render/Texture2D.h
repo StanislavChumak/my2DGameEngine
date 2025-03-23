@@ -11,6 +11,7 @@ namespace Render
     public:
         Texture2D(const GLuint width, const GLuint heigth,
                   const unsigned char *data, const int channels = 4,
+                  const unsigned char nuber = 0,
                   const GLenum filter = GL_LINEAR, const GLenum wrapMode = GL_CLAMP_TO_EDGE);
         Texture2D() = delete;
         Texture2D(Texture2D &) = delete;
@@ -20,9 +21,11 @@ namespace Render
         ~Texture2D();
 
         void bind() const;
+        unsigned char getNumber() const;
 
     private:
         GLuint m_ID = 0;
+        unsigned char m_number = 0;
         GLenum m_mode = GL_RGBA;
         GLuint m_width = 0, m_heigth = 0;
     };

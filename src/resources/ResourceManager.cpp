@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
-#include "../render/ShaderProgram.h"
-#include "../render/Texture2D.h"
+#include "../Render/ShaderProgram.h"
+#include "../Render/Texture2D.h"
+#include "../Render/Sprite2D.h"
 
 #include <string>
 #include <sstream>
@@ -42,7 +43,6 @@ std::string ResourceManager::getFileString(const std::string relativeFilePath) c
     return stringBuffer.str();
 }
 
-
 std::shared_ptr<Render::ShaderProgram> ResourceManager::loadShaders(const std::string &shaderName, const std::string &vertexPath, const std::string &fragmentPath)
 {
     std::string vertexShaderCode = getFileString(vertexPath);
@@ -83,7 +83,7 @@ std::shared_ptr<Render::ShaderProgram> ResourceManager::getShaderProgram(const s
     return nullptr;
 }
 
-std::shared_ptr<Render::Texture2D> ResourceManager::loadTexture2D(const std::string &textureName, const std::string &texturePath)
+std::shared_ptr<Render::Texture2D> ResourceManager::loadTexture2D(const std::string &textureName, const std::string &texturePath, const unsigned char number)
 {
     int channels = 0, width = 0, height = 0;
 
@@ -96,7 +96,7 @@ std::shared_ptr<Render::Texture2D> ResourceManager::loadTexture2D(const std::str
         return nullptr;
     }
 
-    std::shared_ptr<Render::Texture2D> &newTexture2D = m_textures2D.emplace(textureName, std::make_shared<Render::Texture2D>(width, height, pixels, channels, GL_NEAREST, GL_CLAMP_TO_EDGE)).first->second;
+    std::shared_ptr<Render::Texture2D> &newTexture2D = m_textures2D.emplace(textureName, std::make_shared<Render::Texture2D>(width, height, pixels, channels, number, GL_NEAREST, GL_CLAMP_TO_EDGE)).first->second;
 
     stbi_image_free(pixels);
     return newTexture2D;
@@ -110,6 +110,37 @@ std::shared_ptr<Render::Texture2D> ResourceManager::getTexture2D(const std::stri
         return iter->second;
     }
     std::cerr << "Can't find the texture2D: " << textureName << std::endl;
+    return nullptr;
+}
+
+std::shared_ptr<Render::Sprite2D> ResourceManager::loadSprite2D(const std::string &spriteName, const std::string &shaderName, const std::string &textureName, glm::vec3 color)
+{
+    auto shader = getShaderProgram(shaderName);
+    if(!shader)
+    {
+        std::cerr << "Can't find the shaderProgram: " << shaderName << " for the sprite: " << spriteName << std::endl;
+        return nullptr;
+    }
+    auto texture = getTexture2D(textureName);
+    if(!texture)
+    {
+        std::cerr << "Can't find the texture2D: " << textureName << " for the sprite: " << spriteName << std::endl;
+        return nullptr;
+    }
+
+    std::shared_ptr<Render::Sprite2D> &newSprite2D = m_sprites2D.emplace(spriteName, std::make_shared<Render::Sprite2D>(shader, texture, glm::vec2(0.0f), glm::vec2(0.0f), 0.0f, color)).first->second;
+
+    return newSprite2D;
+}
+
+std::shared_ptr<Render::Sprite2D> ResourceManager::getSprite2D(const std::string &spriteName)
+{
+    Sprites2DMap::const_iterator iter = m_sprites2D.find(spriteName);
+    if (iter != m_sprites2D.end())
+    {
+        return iter->second;
+    }
+    std::cerr << "Can't find the sprites2D: " << spriteName << std::endl;
     return nullptr;
 }
 

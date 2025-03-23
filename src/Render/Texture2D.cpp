@@ -4,8 +4,9 @@ namespace Render
 {
     Texture2D::Texture2D(const GLuint width, const GLuint heigth,
                          const unsigned char *data, const int channels,
+                         const unsigned char number,
                          const GLenum filter, const GLenum wrapMode)
-                         : m_width{width}, m_heigth{heigth}
+                         : m_width(width), m_heigth(heigth), m_number(number)
     {
         switch (channels)
         {
@@ -16,7 +17,7 @@ namespace Render
             m_mode = GL_RGB;
         }
         glGenTextures(1, &m_ID);
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE0 + m_number);
         glBindTexture(GL_TEXTURE_2D,m_ID);
         glTexImage2D(GL_TEXTURE_2D, 0, m_mode, m_width, m_heigth, 0, m_mode, GL_UNSIGNED_BYTE, data);
 
@@ -36,6 +37,7 @@ namespace Render
         m_mode = texture2D.m_mode;
         m_width = texture2D.m_width;
         m_heigth = texture2D.m_heigth;
+        m_number = texture2D.m_number;
         return *this;
     }
 
@@ -46,6 +48,7 @@ namespace Render
         m_mode = texture2D.m_mode;
         m_width = texture2D.m_width;
         m_heigth = texture2D.m_heigth;
+        m_number = texture2D.m_number;
     }
 
     Texture2D::~Texture2D()
@@ -56,5 +59,10 @@ namespace Render
     void Texture2D::bind() const
     {
         glBindTexture(GL_TEXTURE_2D,m_ID);
+    }
+
+    unsigned char Texture2D::getNumber() const
+    {
+        return m_number;
     }
 }
