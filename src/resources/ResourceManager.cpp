@@ -113,7 +113,35 @@ std::shared_ptr<Render::Texture2D> ResourceManager::getTexture2D(const std::stri
     return nullptr;
 }
 
-std::shared_ptr<Render::Sprite2D> ResourceManager::loadSprite2D(const std::string &spriteName, const std::string &shaderName, const std::string &textureName, glm::vec3 color)
+std::shared_ptr<Render::Texture2D> ResourceManager::loadTextureAtlas(const std::string &textureName, const std::string &texturePath,
+    const std::vector<std::string> subTextureNames, unsigned int subTextureWidth, unsigned int subTextureHeight)
+{
+    auto texture = loadTexture2D(std::move(textureName),std::move(texturePath));
+    if(texture)
+    {
+        const unsigned int textureWidth = texture->getWidth();
+        const unsigned int textureHeight = texture->getHeight();
+        unsigned int currentTextureOffsetX = 0;
+        unsigned int currentTextureOffsetY = textureHeight;
+        for(const auto& subTextureName : subTextureNames)
+        {
+            glm::vec2 leftBottom(static_cast<float>(currentTextureOffsetX) / textureWidth, static_cast<float>(currentTextureOffsetY - subTextureHeight) / textureHeight);
+            glm::vec2 rigthTop(static_cast<float>(currentTextureOffsetX + subTextureWidth) / textureWidth, static_cast<float>(currentTextureOffsetY) / textureHeight);
+
+            texture->addSubTexture(std::move(subTextureName), leftBottom, rigthTop);
+
+            currentTextureOffsetX += subTextureWidth;
+            if(currentTextureOffsetX >= textureWidth)
+            {
+                currentTextureOffsetX = 0;
+                currentTextureOffsetY -= subTextureHeight;
+            }
+        }
+    }
+    return texture;
+}
+
+std::shared_ptr<Render::Sprite2D> ResourceManager::loadSprite2D(const std::string &spriteName, const std::string &shaderName, const std::string &textureName, const std::string &subTextureName, glm::vec3 color)
 {
     auto shader = getShaderProgram(shaderName);
     if(!shader)
@@ -128,7 +156,7 @@ std::shared_ptr<Render::Sprite2D> ResourceManager::loadSprite2D(const std::strin
         return nullptr;
     }
 
-    std::shared_ptr<Render::Sprite2D> &newSprite2D = m_sprites2D.emplace(spriteName, std::make_shared<Render::Sprite2D>(shader, texture, glm::vec2(0.0f), glm::vec2(0.0f), 0.0f, color)).first->second;
+    std::shared_ptr<Render::Sprite2D> &newSprite2D = m_sprites2D.emplace(spriteName, std::make_shared<Render::Sprite2D>(shader, texture, subTextureName, glm::vec2(0.0f), glm::vec2(0.0f), 0.0f, color)).first->second;
 
     return newSprite2D;
 }

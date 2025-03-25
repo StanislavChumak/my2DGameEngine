@@ -69,8 +69,11 @@ int main(int argc, char ** argv)
     auto defaultTexture = resourceManager->loadTexture2D("myTexture","res/textures/spikes_test_colors.png", 0);
     defaultShader->setInt("textureData", defaultTexture->getNumber());
 
+    std::vector<std::string> subTexturesNemes = {"name", "void1", "void2","4"};
+    auto TextureAtlas = resourceManager->loadTextureAtlas("DefaultTextureAtlas","res/textures/mattress_logo_v1.png", std::move(subTexturesNemes), 16, 16);
 
-    auto defaultSprite = resourceManager->loadSprite2D("MySprte","DefaultShader","myTexture",glm::vec3(1.0f, 0.5f, 0.3f));
+
+    auto defaultSprite = resourceManager->loadSprite2D("MySprte","DefaultShader","DefaultTextureAtlas", "name",glm::vec3(0.3f, 1.0f, 0.5f));
     defaultSprite->setSize(glm::vec2(300.0f, 300.0f));
     defaultSprite->setPosition(glm::vec2(windowSize.x / 2 - 150.0f, windowSize.y / 2 - 150.0f));
 

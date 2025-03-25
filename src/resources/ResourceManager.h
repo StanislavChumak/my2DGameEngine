@@ -2,8 +2,10 @@
 #define H_RESOURCEMANADER
 
 #include <string>
+#include <vector>
 #include <memory>
 #include <map>
+
 #include <glm/vec3.hpp>
 
 namespace Render
@@ -24,9 +26,13 @@ public:
 
     std::shared_ptr<Render::Texture2D> loadTexture2D(const std::string &textureName, const std::string &texturePath, const unsigned char number = 0);
     std::shared_ptr<Render::Texture2D> getTexture2D(const std::string &textureName);
+    std::shared_ptr<Render::Texture2D> loadTextureAtlas(const std::string &textureName, const std::string &texturePath,
+        const std::vector<std::string> subTextureNames, unsigned int subTextureWidth, unsigned int subTextureHeight);
 
-    std::shared_ptr<Render::Sprite2D> loadSprite2D(const std::string &spriteName, const std::string &shaderName, const std::string &textureName, glm::vec3 color);
+    std::shared_ptr<Render::Sprite2D> loadSprite2D(const std::string &spriteName, const std::string &shaderName, const std::string &textureName,
+         const std::string &subTextureName = "default", glm::vec3 color = glm::vec3(1.0f));
     std::shared_ptr<Render::Sprite2D> getSprite2D(const std::string &spriteName);
+
 
 private:
     static ResourceManager *m_resourceManager;

@@ -2,11 +2,11 @@
 
 namespace Render
 {
-    Texture2D::Texture2D(const GLuint width, const GLuint heigth,
+    Texture2D::Texture2D(const GLuint width, const GLuint height,
                          const unsigned char *data, const int channels,
                          const unsigned char number,
                          const GLenum filter, const GLenum wrapMode)
-                         : m_width(width), m_heigth(heigth), m_number(number)
+                         : m_width(width), m_height(height), m_number(number)
     {
         switch (channels)
         {
@@ -19,7 +19,7 @@ namespace Render
         glGenTextures(1, &m_ID);
         glActiveTexture(GL_TEXTURE0 + m_number);
         glBindTexture(GL_TEXTURE_2D,m_ID);
-        glTexImage2D(GL_TEXTURE_2D, 0, m_mode, m_width, m_heigth, 0, m_mode, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, m_mode, m_width, m_height, 0, m_mode, GL_UNSIGNED_BYTE, data);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
@@ -36,7 +36,7 @@ namespace Render
         texture2D.m_ID = 0;
         m_mode = texture2D.m_mode;
         m_width = texture2D.m_width;
-        m_heigth = texture2D.m_heigth;
+        m_height = texture2D.m_height;
         m_number = texture2D.m_number;
         return *this;
     }
@@ -47,13 +47,29 @@ namespace Render
         texture2D.m_ID = 0;
         m_mode = texture2D.m_mode;
         m_width = texture2D.m_width;
-        m_heigth = texture2D.m_heigth;
+        m_height = texture2D.m_height;
         m_number = texture2D.m_number;
     }
 
     Texture2D::~Texture2D()
     {
         glDeleteTextures(1, &m_ID);
+    }
+
+    void Texture2D::addSubTexture(const std::string subTextureName, const glm::vec2 leftBottomVertex, const glm::vec2 rightTopVertex)
+    {
+        m_subTextures.emplace(subTextureName, SubTexture2D(leftBottomVertex, rightTopVertex));
+    }
+    
+    const Texture2D::SubTexture2D& Texture2D::getSubTexture(const std::string& subTextureName) const
+    {
+        auto iterator = m_subTextures.find(subTextureName);
+        if(iterator != m_subTextures.end())
+        {
+            return iterator->second;
+        }
+        const static SubTexture2D defaultSubTexture;
+        return defaultSubTexture;
     }
 
     void Texture2D::bind() const

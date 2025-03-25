@@ -3,22 +3,26 @@
 #include "ShaderProgram.h"
 #include "Texture2D.h"
 
+#include <string>
+
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Render
 {
     Sprite2D::Sprite2D(const std::shared_ptr<ShaderProgram> shaderProgram, const std::shared_ptr<Texture2D> texture,
-                   const glm::vec2 &position, const glm::vec2 &size, const float rotation, const glm::vec3 color)
+                       const std::string nameSubTexture, const glm::vec2 &position, const glm::vec2 &size, const float rotation, const glm::vec3 color)
         : m_shaderProgram(shaderProgram), m_texture(texture),
-        m_position(position), m_size(size), m_rotation(rotation)
+          m_position(position), m_size(size), m_rotation(rotation)
     {
+        auto subTexture = texture->getSubTexture(nameSubTexture);
+
         const GLfloat spriteData[] = {
-            //vertex    //texture   //color
-            1.0f, 1.0f, 1.0f, 1.0f, color.x, color.y, color.z,
-            1.0f, 0.0f, 1.0f, 0.0f, color.x, color.y, color.z,
-            0.0f, 1.0f, 0.0f, 1.0f, color.x, color.y, color.z,
-            0.0f, 0.0f, 0.0f, 0.0f, color.x, color.y, color.z
+            // vertex    //texture   //color
+            1.0f, 1.0f, subTexture.rightTopVertex.x, subTexture.rightTopVertex.y, color.x, color.y, color.z,    // right top
+            1.0f, 0.0f, subTexture.rightTopVertex.x, subTexture.leftBottomVertex.y, color.x, color.y, color.z,  // right bottom
+            0.0f, 1.0f, subTexture.leftBottomVertex.x, subTexture.rightTopVertex.y, color.x, color.y, color.z,  // left top
+            0.0f, 0.0f, subTexture.leftBottomVertex.x, subTexture.leftBottomVertex.y, color.x, color.y, color.z // left bottom
         };
         const GLuint indices[] = {
             0, 1, 2, // first Triangle
@@ -64,7 +68,7 @@ namespace Render
     void Sprite2D::render() const
     {
         m_shaderProgram->use();
-        
+
         glm::mat4 model(1.0f);
 
         model = glm::translate(model, glm::vec3(0.5f * m_size.x + m_position.x, 0.5f * m_size.y + m_position.y, 0.0f));
